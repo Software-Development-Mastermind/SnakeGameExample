@@ -50,31 +50,42 @@ function snakeGame() {
 }
 
 document.addEventListener('keydown', keyDownHanlder, false);
-document.addEventListener('keyup', keyUpHanlder, false);
+//document.addEventListener('keyup', keyUpHanlder, false);
 
 function keyDownHanlder(e) {
     if (e.key == 'Right' || e.key == 'ArrowRight') {
         rightPressed = true;
+        leftPressed = false;
+        upPressed = false;
+        downPressed = false;
     } else if (e.key == 'Left' || e.key == 'ArrowLeft') {
+        rightPressed = false;
         leftPressed = true;
+        upPressed = false;
+        downPressed = false;
     } else if (e.key == 'Up' || e.key == 'ArrowUp') {
+        rightPressed = false;
+        leftPressed = false;
         upPressed = true;
+        downPressed = false;
     } else if (e.key == 'Down' || e.key == 'ArrowDown') {
+        rightPressed = false;
+        leftPressed = false;
+        upPressed = false;
         downPressed = true;
     }
-
 }
 
-function keyUpHanlder(e) {
-    if (e.key == 'Right' || e.key == 'ArrowRight') {
-        rightPressed = false;
-    } else if (e.key == 'Left' || e.key == 'ArrowLeft') {
-        leftPressed = false;
-    } else if (e.key == 'Up' || e.key == 'ArrowUp') {
-        upPressed = false;
-    } else if (e.key == 'Down' || e.key == 'ArrowDown') {
-        downPressed = false;
-    }
-}
+// function keyUpHanlder(e) {
+//     if (e.key == 'Right' || e.key == 'ArrowRight') {
+//         rightPressed = false;
+//     } else if (e.key == 'Left' || e.key == 'ArrowLeft') {
+//         leftPressed = false;
+//     } else if (e.key == 'Up' || e.key == 'ArrowUp') {
+//         upPressed = false;
+//     } else if (e.key == 'Down' || e.key == 'ArrowDown') {
+//         downPressed = false;
+//     }
+// }
 
 setInterval(snakeGame, 100);
