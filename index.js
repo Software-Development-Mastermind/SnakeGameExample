@@ -4,8 +4,13 @@ let snakeX = canvas.width / 2;
 let snakeY = canvas.height / 2;
 let snakedX = 25;
 let snakedY = -25;
-let snakeLength = 25;
 let snakeWidth = 25;
+let snakeHeight = 25;
+
+let borderX = 25;
+let borderY = 25;
+let borderWidth = 750;
+let borderHeight = 550;
 
 let score = 0;
 let applesHit = 0;
@@ -14,8 +19,11 @@ let interval;
 
 let snake = [];
 
-let appleX = 200;
-let appleY = 225;
+let appleHit = true;
+let appleX;
+let appleY;
+let appleWidth = 25;
+let appleHeight = 25;
 
 let rightPressed = false;
 let leftPressed = false;
@@ -24,32 +32,48 @@ let downPressed = false;
 
 window.onload = function() {
     snake.push({ x: snakeX, y: snakeY });
-    console.log(snake);
+    drawApple();
+}
+
+function drawBorder() {
+    canvasContext.beginPath();
+    canvasContext.rect(borderX, borderY, borderWidth, borderHeight);
+    canvasContext.stroke();
 }
 
 function drawApple() {
+    if (appleHit) {
+        appleX = (Math.round(Math.floor(Math.random() * ((borderWidth - appleWidth) + 1) / 25) * 25) + 25);
+        appleY = (Math.round(Math.floor(Math.random() * ((borderHeight - appleHeight) + 1) / 25) * 25) + 25);
+        appleHit = false;
+    }
+    canvasContext.beginPath();
+    canvasContext.arc((appleX + (appleWidth / 2)), (appleY + (appleHeight / 2)), 10, 0, Math.PI * 2, false);
     canvasContext.fillStyle = 'red';
-    canvasContext.fillRect(appleX, appleY, 25, 25);
+    canvasContext.fill();
+    canvasContext.closePath();
 }
 
 function drawSnake() {
     for (i = snake.length - 1; i >= 0; i--) {
+        canvasContext.fillStyle = '#b8c500';
+        canvasContext.fillRect(snake[i].x, snake[i].y, snakeWidth, snakeHeight);
         canvasContext.fillStyle = 'black';
-        canvasContext.fillRect(snake[i].x, snake[i].y, snakeLength, snakeWidth);
+        canvasContext.fillRect(snake[i].x, snake[i].y, snakeWidth - 1, snakeHeight - 1);
     }
 }
 
 function drawScore() {
     canvasContext.font = '16px Arial';
     canvasContext.fillStyle = 'black';
-    canvasContext.fillText('Score: ' + score, 8, 20);
+    canvasContext.fillText('Score: ' + score, 25, 20);
 
 }
 
 function drawAppleHits() {
     canvasContext.font = '16px Arial';
     canvasContext.fillStyle = 'black';
-    canvasContext.fillText('Apples Hit: ' + applesHit, canvas.width - 110, 20);
+    canvasContext.fillText('Apples Hit: ' + applesHit, canvas.width - 140, 20);
 }
 
 function moveSnake() {
@@ -73,6 +97,7 @@ function moveSnake() {
 
 function snakeGame() {
     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+    drawBorder();
     drawScore();
     drawAppleHits();
     drawApple();
@@ -106,10 +131,10 @@ function gameOver() {
 }
 
 function edgeCollision() {
-    if (snake[0].x > canvas.width || snake[0].x < 0) {
+    if (snake[0].x > borderWidth || snake[0].x < borderX) {
         gameOver();
     }
-    if (snake[0].y > canvas.height || snake[0].y < 0) {
+    if (snake[0].y > borderHeight || snake[0].y < borderY) {
         gameOver();
     }
 }
@@ -126,14 +151,18 @@ function appleCollision() {
         } else if (downPressed) {
             snake.push({ x: snake[snake.length - 1].x, y: snake[snake.length - 1].y + snakedY });
         }
+        appleHit = true;
         applesHit++;
         score += 10;
+        drawApple();
     }
 }
+
 
 document.addEventListener('keydown', keyDownHanlder, false);
 
 function keyDownHanlder(e) {
+    console.log(e.key);
     if ((e.key === 'Right' || e.key === 'ArrowRight') && (!leftPressed)) {
         rightPressed = true;
         leftPressed = false;
@@ -155,16 +184,6 @@ function keyDownHanlder(e) {
         upPressed = false;
         downPressed = true;
     }
-
 }
 
-
 interval = setInterval(snakeGame, 100);
-
-
-    // if (snake[0].x + snakedX > canvas.width - snakeLength / 2 || snake[0].x + snakedX < 0) {
-    //     gameOver();
-    // }
-    // if (snake[0].y + snakedY > canvas.height - snakeWidth / 2 || snake[0].y + snakedY < 0) {
-    //     gameOver();
-    // }
