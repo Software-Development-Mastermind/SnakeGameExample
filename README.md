@@ -1,11 +1,11 @@
 # Calculator App
-Old School Snake Game written entirely in Vanilla JavaScript, HTML and CSS
+Retro Snake Game written entirely in Vanilla JavaScript, HTML and CSS
 
 Code Located [Here](https://github.com/hcuellar-coder/SnakeGame)
 
 Run Code [Here](https://hcuellar-coder.github.io/SnakeGame/)
 
-![Snake Game](./images/)
+![Snake Game](./images/snakeGame.PNG)
 
 ## Summary
 Old School Snake Game with the look and feel of the Retro Nokia Brick phones we grew up playing with. The game is simple in its rules,

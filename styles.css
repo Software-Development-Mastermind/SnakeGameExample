@@ -13,4 +13,10 @@ h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-size: 56px;
+    color: #b8c500;
+}
+
+body {
+    background-color: #4b525a;
 }
