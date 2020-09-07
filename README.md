@@ -1,4 +1,4 @@
-# Calculator App
+# Retro Snake Game
 Retro Snake Game written entirely in Vanilla JavaScript, HTML and CSS
 
 Code Located [Here](https://github.com/hcuellar-coder/SnakeGame)

@@ -30,6 +30,8 @@ let leftPressed = false;
 let upPressed = false;
 let downPressed = false;
 
+let isGameOver = false;
+
 window.onload = function() {
     snake.push({ x: snakeX, y: snakeY });
     drawApple();
@@ -67,13 +69,32 @@ function drawScore() {
     canvasContext.font = '16px Arial';
     canvasContext.fillStyle = 'black';
     canvasContext.fillText('Score: ' + score, 25, 20);
-
 }
+
+function drawGameOver() {
+    canvasContext.font = '48px Arial';
+    canvasContext.fillStyle = '#b8c500';
+    canvasContext.fillRect((borderWidth / 2) - 125, (borderHeight / 2) - 50, 315, 120);
+    canvasContext.fillStyle = 'black';
+
+    canvasContext.beginPath();
+    canvasContext.rect((borderWidth / 2) - 125, (borderHeight / 2) - 50, 315, 120);
+    canvasContext.stroke();
+    canvasContext.closePath();
+
+    canvasContext.fillText('GAME OVER!', (borderWidth / 2) - 120, (borderHeight / 2));
+    canvasContext.fillRect((borderWidth / 2) - 60, (borderHeight / 2) + 10, 200, 55);
+
+    canvasContext.fillStyle = '#b8c500';
+    canvasContext.fillText('Hit Enter', (borderWidth / 2) - 55, (borderHeight / 2) + 55);
+}
+
+
 
 function drawAppleHits() {
     canvasContext.font = '16px Arial';
     canvasContext.fillStyle = 'black';
-    canvasContext.fillText('Apples Hit: ' + applesHit, canvas.width - 140, 20);
+    canvasContext.fillText('Apples: ' + applesHit, canvas.width - 120, 20);
 }
 
 function moveSnake() {
@@ -100,11 +121,13 @@ function snakeGame() {
     drawBorder();
     drawScore();
     drawAppleHits();
+    collisionDetect();
     drawApple();
     moveSnake();
     drawSnake();
-    collisionDetect();
-
+    if (isGameOver) {
+        drawGameOver();
+    }
 }
 
 function collisionDetect() {
@@ -120,14 +143,6 @@ function snakeCollision() {
             gameOver();
         }
     }
-}
-
-function gameOver() {
-    alert('Game Over');
-    document.location.reload();
-    interval = clearInterval(interval);
-    applesHit = 0;
-    score = 0;
 }
 
 function edgeCollision() {
@@ -158,6 +173,12 @@ function appleCollision() {
     }
 }
 
+function gameOver() {
+    interval = clearInterval(interval);
+    isGameOver = true;
+    drawGameOver();
+}
+
 
 document.addEventListener('keydown', keyDownHanlder, false);
 
@@ -183,7 +204,13 @@ function keyDownHanlder(e) {
         leftPressed = false;
         upPressed = false;
         downPressed = true;
+    } else if ((e.key === 'Enter') && (isGameOver)) {
+        isGameOver = false;
+        document.location.reload();
+        applesHit = 0;
+        score = 0;
     }
 }
+
 
 interval = setInterval(snakeGame, 100);
