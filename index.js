@@ -1,29 +1,25 @@
 let canvas = document.getElementById('game-canvas');
 let canvasContext = canvas.getContext('2d');
+
 let snakeX = canvas.width / 2;
 let snakeY = canvas.height / 2;
 let snakedX = 25;
 let snakedY = -25;
 let snakeWidth = 25;
 let snakeHeight = 25;
+let snake = [];
+
+let appleX;
+let appleY;
+let appleWidth = 25;
+let appleHeight = 25;
+let apples = 0;
+let appleHit = true;
 
 let borderX = 25;
 let borderY = 25;
 let borderWidth = 750;
 let borderHeight = 550;
-
-let score = 0;
-let applesHit = 0;
-
-let interval;
-
-let snake = [];
-
-let appleHit = true;
-let appleX;
-let appleY;
-let appleWidth = 25;
-let appleHeight = 25;
 
 let rightPressed = false;
 let leftPressed = false;
@@ -31,30 +27,7 @@ let upPressed = false;
 let downPressed = false;
 
 let isGameOver = false;
-
-window.onload = function() {
-    snake.push({ x: snakeX, y: snakeY });
-    drawApple();
-}
-
-function drawBorder() {
-    canvasContext.beginPath();
-    canvasContext.rect(borderX, borderY, borderWidth, borderHeight);
-    canvasContext.stroke();
-}
-
-function drawApple() {
-    if (appleHit) {
-        appleX = (Math.round(Math.floor(Math.random() * ((borderWidth - appleWidth) + 1) / 25) * 25) + 25);
-        appleY = (Math.round(Math.floor(Math.random() * ((borderHeight - appleHeight) + 1) / 25) * 25) + 25);
-        appleHit = false;
-    }
-    canvasContext.beginPath();
-    canvasContext.arc((appleX + (appleWidth / 2)), (appleY + (appleHeight / 2)), 10, 0, Math.PI * 2, false);
-    canvasContext.fillStyle = 'red';
-    canvasContext.fill();
-    canvasContext.closePath();
-}
+let interval;
 
 function drawSnake() {
     for (i = snake.length - 1; i >= 0; i--) {
@@ -65,10 +38,33 @@ function drawSnake() {
     }
 }
 
+function drawApple() {
+    if (appleHit) {
+        appleX = (Math.round(Math.floor(Math.random() * ((borderWidth - appleWidth) + 1) / 25) * 25) + 25);
+        appleY = (Math.round(Math.floor(Math.random() * ((borderHeight - appleHeight) + 1) / 25) * 25) + 25);
+        appleHit = false;
+    }
+    canvasContext.beginPath();
+    canvasContext.arc((appleX + (appleWidth / 2)), (appleY + (appleHeight / 2)), 10, 0, Math.PI * 2, false);
+    canvasContext.fillStyle = '#e02737';
+    canvasContext.fill();
+    canvasContext.closePath();
+}
+
+function drawBorder() {
+    canvasContext.beginPath();
+    canvasContext.rect(borderX, borderY, borderWidth, borderHeight);
+    canvasContext.stroke();
+}
+
 function drawScore() {
     canvasContext.font = '16px Arial';
     canvasContext.fillStyle = 'black';
-    canvasContext.fillText('Score: ' + score, 25, 20);
+    canvasContext.fillText('Score: ' + apples * 10, 25, 20);
+
+    canvasContext.font = '16px Arial';
+    canvasContext.fillStyle = 'black';
+    canvasContext.fillText('Apples: ' + apples, canvas.width - 120, 20);
 }
 
 function drawGameOver() {
@@ -89,14 +85,6 @@ function drawGameOver() {
     canvasContext.fillText('Hit Enter', (borderWidth / 2) - 55, (borderHeight / 2) + 55);
 }
 
-
-
-function drawAppleHits() {
-    canvasContext.font = '16px Arial';
-    canvasContext.fillStyle = 'black';
-    canvasContext.fillText('Apples: ' + applesHit, canvas.width - 120, 20);
-}
-
 function moveSnake() {
     for (i = snake.length - 1; i > 0; i--) {
         snake[i].x = snake[i - 1].x;
@@ -114,28 +102,6 @@ function moveSnake() {
     }
 }
 
-
-
-function snakeGame() {
-    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-    drawBorder();
-    drawScore();
-    drawAppleHits();
-    collisionDetect();
-    drawApple();
-    moveSnake();
-    drawSnake();
-    if (isGameOver) {
-        drawGameOver();
-    }
-}
-
-function collisionDetect() {
-    appleCollision();
-    edgeCollision();
-    snakeCollision();
-}
-
 function snakeCollision() {
     for (i = snake.length - 1; i > 0; i--) {
         if (snake[0].x > snake[i].x - 25 && snake[0].x < snake[i].x + 25
@@ -146,10 +112,8 @@ function snakeCollision() {
 }
 
 function edgeCollision() {
-    if (snake[0].x > borderWidth || snake[0].x < borderX) {
-        gameOver();
-    }
-    if (snake[0].y > borderHeight || snake[0].y < borderY) {
+    if (snake[0].x > borderWidth || snake[0].x < borderX ||
+        snake[0].y > borderHeight || snake[0].y < borderY) {
         gameOver();
     }
 }
@@ -157,20 +121,17 @@ function edgeCollision() {
 function appleCollision() {
     if (snake[0].x > appleX - 25 && snake[0].x < appleX + 25
         && snake[0].y > appleY - 25 && snake[0].y < appleY + 25) {
-        if (rightPressed) {
-            snake.push({ x: snake[snake.length - 1].x - snakedX, y: snake[snake.length - 1].y });
-        } else if (leftPressed) {
-            snake.push({ x: snake[snake.length - 1].x + snakedX, y: snake[snake.length - 1].y });
-        } else if (upPressed) {
-            snake.push({ x: snake[snake.length - 1].x, y: snake[snake.length - 1].y - snakedY });
-        } else if (downPressed) {
-            snake.push({ x: snake[snake.length - 1].x, y: snake[snake.length - 1].y + snakedY });
-        }
+        snake.push({ x: -25, y: -25 });
         appleHit = true;
-        applesHit++;
-        score += 10;
+        apples++;
         drawApple();
     }
+}
+
+function collisionDetect() {
+    appleCollision();
+    edgeCollision();
+    snakeCollision();
 }
 
 function gameOver() {
@@ -179,11 +140,9 @@ function gameOver() {
     drawGameOver();
 }
 
-
 document.addEventListener('keydown', keyDownHanlder, false);
 
 function keyDownHanlder(e) {
-    console.log(e.key);
     if ((e.key === 'Right' || e.key === 'ArrowRight') && (!leftPressed)) {
         rightPressed = true;
         leftPressed = false;
@@ -207,10 +166,28 @@ function keyDownHanlder(e) {
     } else if ((e.key === 'Enter') && (isGameOver)) {
         isGameOver = false;
         document.location.reload();
-        applesHit = 0;
-        score = 0;
+        apples = 0;
     }
 }
 
+window.onload = function() {
+    snake.push({ x: snakeX, y: snakeY });
+    drawApple();
+}
+
+function snakeGame() {
+    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+    drawBorder();
+    drawScore();
+    collisionDetect();
+
+    if (isGameOver) {
+        drawGameOver();
+    } else {
+        drawApple();
+        drawSnake();
+        moveSnake();
+    }
+}
 
 interval = setInterval(snakeGame, 100);
