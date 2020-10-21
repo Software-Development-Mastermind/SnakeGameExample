@@ -12,4 +12,4 @@ The snake is allergic to the edges and sadly to itself, so stay away or it's GAM
 it was definetly a fun experience!
 
 ## Author
-Heriberto Cuellar – Full Stack Software Developer - [LinkedIn](https://www.linkedin.com/in/heriberto-c-5aa11952)
+Heriberto Cuellar – Full Stack Software Developer - [Website](https://heribertocuellar.com) | [LinkedIn](https://www.linkedin.com/in/heriberto-c-5aa11952)
